@@ -150,6 +150,7 @@
 
 				sjs.onHit("Food","right_screen",function(x,y){
 					Oof_text = new sjs.Text("Game Over Refresh To Play Again\n You Made It To Wave " + wave,18,"black");
+                    Oof_text.center()
 				});
                 sjs.onHit("Food","background",function(x,y){
 					var htxt = new sjs.Text(x.health)
