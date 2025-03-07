@@ -205,7 +205,35 @@
                 var MacAndCheeseScore = (800*800) * 1.5
                 var MacAndCheeseTime = (MacAndCheeseScore / (waveConverted * 3))* .2 * 1000
 
+                var BroccoliScore = (1000*1000) * 2
+                var BroccoliTime = (BroccoliScore / (waveConverted * 3))* .2 * 1000
+
                 var spendLeft = wavedifficulty;
+
+                numBroccolis = 0;
+                if(wave >= WaveAllowFactor * 50){
+                    numBroccolis = Math.floor(spendLeft * .75 / BroccoliScore);
+                    spendLeft = spendLeft - numBroccolis * BroccoliScore;
+                    var BroccoliInt = setInterval(function(){
+                        if((numBroccolis >= 1)){
+                            wrun = true
+                            var Broccoli_health = 1000
+                            var Broccoli= new sjs.Image("broc2.png")
+                            Broccoli.type = "Food";
+                            Broccoli.moveTo(0,200);
+                            Broccoli.noBounds=true;
+                            Broccoli.setSize(400,400);
+                            Broccoli.friction = 0;
+                            Broccoli.pushRight(2);
+                            Broccoli.health = Broccoli_health
+                            Broccoli.cooldown = 0
+                            numBroccolis --;
+                            if(numBroccolis == 0){
+                                clearInterval(BroccoliInt)
+                            }
+                        }
+                    },BroccoliTime)
+                }
 
                 numMacAndCheeses = 0;
                 if(wave >= WaveAllowFactor * 50){
@@ -265,7 +293,7 @@
                         if((numPizzas >= 1)){
                             wrun = true
                             var Pizza_health = 500
-                            var Pizza= new sjs.Image("pizza.png")
+                            var Pizza= new sjs.Image("Pizza.png")
                             Pizza.type = "Food";
                             Pizza.moveTo(0,0);
                             Pizza.noBounds=true;
