@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Food Defense </title>
+		<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
+		<script>
+            var help = 1
+            var dif = 3000
+            var wrun = false
+			function start(){
+				sjs.open("target",800,500 );
+                document.body.style.backgroundColor = "#000000";
+
+				//Background Object and Properties
+				var background = new sjs.Image("bkg.png");
+				background.setSize(2500,sjs.getHeight());
+                background.type = "background"
+				
+				var view = new sjs.Image("")
+				view.setSize(800,500);
+				view.moveTo(2400,500);
+				view.node.style.zIndex = -1;
+
+				sjs.scrollable(view,background);
+                var x = 0
+			    Crumbs_text = new sjs.Text("Crumbs: "+Crumbs,18,"black");
+			    Crumbs_text.fixed = true;
+                Wave_text = new sjs.Text("Wave: "+help,18,"black");
+			    Wave_text.fixed = true;
+                Wave_text.moveTo(0,20)
+                
+
+				sjs.keyDown(LEFT_KEY, function(){
+					view.pushLeft();
+				});
+
+				sjs.keyDown(RIGHT_KEY, function(){
+					view.pushRight();
+				});
+                var startBtn = new sjs.Button("Wave 1", function(){
+                    //(difficulty,wave,waveallow)
+                    Wavemaker(3000,1,1)
+                    startBtn.destroy()
+			    });
+                startBtn.moveTo(400,250)
+                
+                
+                
+            
+				var tracker = new sjs.Image("");
+				tracker.type = "tracker";
+				tracker.setSize(1,sjs.getHeight());
+				tracker.moveTo(background.getWidth()/4,0);
+
+				var land = new sjs.Image("");
+				land.type="land";
+				land.setSize(background.getWidth(),50);
+				land.moveTo(0,390);
+				land.node.style.zIndex = -1;
+
+				sjs.onHit(["Spoon", "fork","Knife"],"land",function(x,y){
+					sjs.stoppedBy(x,y);
+				});
+                sjs.onHit("spike","land",function(x,y){
+					sjs.stoppedBy(x,y);
+                    platespikegrd = new sjs.Image("platespike.png")
+                    platespikegrd.moveTo(x.getX(),y.getY())
+                    platespikegrd.setSize(30,30)
+                    platespikegrd.damage = x.damage
+                    platespikegrd.type = "grdspike"
+                    x.destroy()
+				});
+
+
+				sjs.onHit("Spoon","Food",function(x,y){
+					y.moveTo(y.getX()-25,y.getY());
+					x.lives--;
+					if(x.lives==0){
+						x.destroy();
+					}
+				});
+
+				sjs.onHit("Fork_range","Food",function(x,y){
+					if(x.fire == true){
+                        var gbullet_damage = 10
+						var gbullet = new sjs.Image("fork bullet.png");
+						gbullet.type="bullet";
+						gbullet.moveTo(x.getX() + 260 ,320);
+						gbullet.setSize(50, 50);
+						gbullet.friction=0;
+						var dx = y.getX()*1.1 - x.getX()-600;
+						var dy = y.getY() - x.getY();
+						var angle = Math.atan2(dy, dx);
+						gbullet.pushRight(2*Math.cos(angle));
+						gbullet.pushDown(2*Math.sin(angle));
+						gbullet.noBounds=true;
+                        gbullet.damage = gbullet_damage
+						x.fire = false;
+						setTimeout(function(){
+							gbullet.destroy();
+							x.fire=true;
+						},x.firerate);
+					}
+				});
+
+
+				sjs.onHit("fork","Food",function(x,y){
+					x.destroy();
+					x.Fork_range.destroy();
+				});
+
+				sjs.onHit("Food","bullet",function(x,y){
+					x.health -= y.damage;
+                    if (x.health <= 0){
+                        x.destroy()
+                    }
+					y.destroy();
+					Crumbs += y.damage/2;
+					Crumbs_text.setText("Crumbs: " + Crumbs);
+
+				});
+                sjs.onHit("Food","Knife",function(x,y,callback,per = 1,minDelay = 100000){
+                    if(!Object.hasOwn(x, 'HitSet')){
+                        x.HitSet = new Set([])
+                    }
+                    if(!x.HitSet.has(y.HitId))
+                    {
+                        x.HitSet.add(y.HitId);
+                        x.health -= y.damage;
+                        x.cooldown = 3
+                        if (x.health <= 0){
+                            x.destroy()
+                        }
+                        Crumbs += y.damage/2;
+                        Crumbs_text.setText("Crumbs: " + Crumbs);
+                    }
+				});
+                    
+                    
+                sjs.onHit("Food","grdspike",function(x,y){
+					x.health -= y.damage;
+                    if (x.health <= 0){
+                        x.destroy()
+                    }
+					y.destroy();
+					Crumbs += y.damage/2;
+					Crumbs_text.setText("Crumbs: " + Crumbs);
+
+				});
+
+				sjs.onHit("Food","right_screen",function(x,y){
+					window.location="gameover.html";
+				});
+                sjs.onHit("Food","background",function(x,y){
+					var htxt = new sjs.Text(x.health)
+                    htxt.moveTo(x.getX()+x.getWidth()/2,x.getY())
+                    setTimeout(function(){
+                        htxt.destroy()
+					},40);
+				});
+
+			}
+
+			var Crumbs = 100;
+            var Btndest = false
+			//var Crumbs_text = "";
+            function Wavemaker(wavedifficulty,wave,WaveAllowFactor){
+                Btndest = false
+                // Score Equation: (Health^2) * Speed
+                var waveConverted = (wave * 5) - 5 + 100
+
+                var ChickenNuggetScore = (10*10) * 3
+                var ChickenNuggetTime = (ChickenNuggetScore / (waveConverted * 3))* 1.4 * 1000
+
+                var FrenchFryScore = (15*15) * 2
+                var FrenchFryTime = (FrenchFryScore / (waveConverted * 3))* 1.1 * 1000
+
+                var BurgerScore = (25*25) * 4
+                var BurgerTime = (BurgerScore / (waveConverted * 3))* .5 * 1000
+
+                var HotDogScore = (60*60) * 3
+                var HotDogTime = (HotDogScore / (waveConverted * 3))* .23 * 1000
+
+                var BurritoScore = (90*90) * 2
+                var BurritoTime = (BurritoScore / (waveConverted * 3))* .23 * 1000
+
+                var ChickenLegScore = (130*130) * 2
+                var ChickenLegTime = (ChickenLegScore / (waveConverted * 3))* .23 * 1000
+
+                var TacoScore = (180*180) * 3.5
+                var TacoTime = (TacoScore / (waveConverted * 3))* .23 * 1000
+
+                var SandwichScore = (250*250) * 3
+                var SandwichTime = (SandwichScore / (waveConverted * 3))* .23 * 1000
+
+                var Ramen_FuhScore = (330*330) * 2.5
+                var Ramen_FuhTime = (Ramen_FuhScore / (waveConverted * 3))* .25 * 1000
+
+                var PizzaScore = (500*500) * 1
+                var PizzaTime = (PizzaScore / (waveConverted * 3))* .2 * 1000
+
+                var SpaghettiScore = (670*670) * 1.5
+                var SpaghettiTime = (SpaghettiScore / (waveConverted * 3))* .2 * 1000
+                
+                var MacAndCheeseScore = (800*800) * 1.5
+                var MacAndCheeseTime = (MacAndCheeseScore / (waveConverted * 3))* .2 * 1000
+
+                var spendLeft = wavedifficulty;
+
+                numMacAndCheeses = 0;
+                if(wave >= WaveAllowFactor * 50){
+                    numMacAndCheeses = Math.floor(spendLeft * .75 / MacAndCheeseScore);
+                    spendLeft = spendLeft - numMacAndCheeses * MacAndCheeseScore;
+                    var MacAndCheeseInt = setInterval(function(){
+                        if((numMacAndCheeses >= 1)){
+                            wrun = true
+                            var MacAndCheese_health = 800
+                            var MacAndCheese= new sjs.Image("MacAndCheese.png")
+                            MacAndCheese.type = "Food";
+                            MacAndCheese.moveTo(0,200);
+                            MacAndCheese.noBounds=true;
+                            MacAndCheese.setSize(300,300);
+                            MacAndCheese.friction = 0;
+                            MacAndCheese.pushRight(2);
+                            MacAndCheese.health = MacAndCheese_health
+                            MacAndCheese.cooldown = 0
+                            numMacAndCheeses --;
+                            if(numMacAndCheeses == 0){
+                                clearInterval(MacAndCheeseInt)
+                            }
+                        }
+                    },MacAndCheeseTime)
+                }
+
+                numSpaghettis = 0;
+                if(wave >= WaveAllowFactor * 43){
+                    numSpaghettis = Math.floor(spendLeft * .75 / SpaghettiScore);
+                    spendLeft = spendLeft - numSpaghettis * SpaghettiScore;
+                    var SpaghettiInt = setInterval(function(){
+                        if((numSpaghettis >= 1)){
+                            wrun = true
+                            var Spaghetti_health = 670
+                            var Spaghetti= new sjs.Image("Spaghetti.png")
+                            Spaghetti.type = "Food";
+                            Spaghetti.moveTo(0,200);
+                            Spaghetti.noBounds=true;
+                            Spaghetti.setSize(300,300);
+                            Spaghetti.friction = 0;
+                            Spaghetti.pushRight(1.5);
+                            Spaghetti.health = Spaghetti_health
+                            Spaghetti.cooldown = 0
+                            numSpaghettis --;
+                            if(numSpaghettis == 0){
+                                clearInterval(SpaghettiInt)
+                            }
+                        }
+                    },SpaghettiTime)
+                }
+
+                numPizzas = 0;
+                if(wave >= WaveAllowFactor * 35){
+                    numPizzas = Math.floor(spendLeft * .75 / PizzaScore);
+                    spendLeft = spendLeft - numPizzas * PizzaScore;
+                    var PizzaInt = setInterval(function(){
+                        if((numPizzas >= 1)){
+                            wrun = true
+                            var Pizza_health = 500
+                            var Pizza= new sjs.Image("pizza.png")
+                            Pizza.type = "Food";
+                            Pizza.moveTo(0,0);
+                            Pizza.noBounds=true;
+                            Pizza.setSize(400,400);
+                            Pizza.friction = 0;
+                            Pizza.pushRight(1);
+                            Pizza.health = Pizza_health
+                            Pizza.cooldown = 0
+                            numPizzas --;
+                            if(numPizzas == 0){
+                                clearInterval(PizzaInt)
+                            }
+                        }
+                    },PizzaTime)
+                }
+                
+                numRamen_Fuhs = 0
+                if(wave >= WaveAllowFactor * 25){
+                    numRamen_Fuhs = Math.floor(spendLeft * .75 / Ramen_FuhScore);
+                    spendLeft = spendLeft - numRamen_Fuhs * Ramen_FuhScore;
+                    var Ramen_FuhInt = setInterval(function(){
+                        if((numRamen_Fuhs >= 1)){
+                            wrun = true
+                            var Ramen_Fuh_health = 330
+                            var Ramen_Fuh= new sjs.Image("Ramen.png")
+                            Ramen_Fuh.type = "Food";
+                            Ramen_Fuh.moveTo(0,200);
+                            Ramen_Fuh.noBounds=true;
+                            Ramen_Fuh.setSize(250,250);
+                            Ramen_Fuh.friction = 0;
+                            Ramen_Fuh.pushRight(2.5);
+                            Ramen_Fuh.health = Ramen_Fuh_health
+                            Ramen_Fuh.cooldown = 0
+                            numRamen_Fuhs --;
+                            if(numRamen_Fuhs == 0){
+                                clearInterval(Ramen_FuhInt)
+                            }
+                        }
+                    },Ramen_FuhTime)
+                }
+
+                numSandwichs = 0
+                if(wave >= WaveAllowFactor * 20){
+                    numSandwichs = Math.floor(spendLeft * .75 / SandwichScore);
+                    spendLeft = spendLeft - numSandwichs * SandwichScore;
+                    var SandwichInt = setInterval(function(){
+                        if((numSandwichs >= 1)){
+                            wrun = true
+                            var Sandwich_health = 250
+                            var Sandwich= new sjs.Image("Sandwich2.png")
+                            Sandwich.type = "Food";
+                            Sandwich.moveTo(0,240);
+                            Sandwich.noBounds=true;
+                            Sandwich.setSize(250,250);
+                            Sandwich.friction = 0;
+                            Sandwich.pushRight(3);
+                            Sandwich.health = Sandwich_health
+                            Sandwich.cooldown = 0
+                            numSandwichs --;
+                            if(numSandwichs == 0){
+                                clearInterval(SandwichInt)
+                            }
+                        }
+                    },SandwichTime)
+                }
+
+                numTacos = 0
+                if(wave >= WaveAllowFactor * 16){
+                    numTacos = Math.floor(spendLeft * .75 / TacoScore);
+                    spendLeft = spendLeft - numTacos * TacoScore;
+                    var TacoInt = setInterval(function(){
+                        if((numTacos >= 1)){
+                            wrun = true
+                            var Taco_health = 180
+                            var Taco= new sjs.Image("Taco2.png")
+                            Taco.type = "Food";
+                            Taco.moveTo(0,250);
+                            Taco.noBounds=true;
+                            Taco.setSize(200,200);
+                            Taco.friction = 0;
+                            Taco.pushRight(3.5);
+                            Taco.health = Taco_health
+                            Taco.cooldown = 0
+                            numTacos --;
+                            if(numTacos == 0){
+                                clearInterval(TacoInt)
+                            }
+                        }
+                    },TacoTime)
+                }
+
+                numChickenLegs = 0
+                if(wave >= WaveAllowFactor * 12){
+                    numChickenLegs = Math.floor(spendLeft * .75 / ChickenLegScore);
+                    spendLeft = spendLeft - numChickenLegs * ChickenLegScore;
+                    var ChickenLegInt = setInterval(function(){
+                        if((numChickenLegs >= 1)){
+                            wrun = true
+                            var ChickenLeg_health = 130
+                            var ChickenLeg= new sjs.Image("Chicken Leg.png")
+                            ChickenLeg.type = "Food";
+                            ChickenLeg.moveTo(0,200);
+                            ChickenLeg.noBounds=true;
+                            ChickenLeg.setSize(200,200);
+                            ChickenLeg.friction = 0;
+                            ChickenLeg.pushRight(2);
+                            ChickenLeg.health = ChickenLeg_health
+                            ChickenLeg.cooldown = 0
+                            numChickenLegs --;
+                            if(numChickenLegs == 0){
+                                clearInterval(ChickenLegInt)
+                            }
+                        }
+                    },ChickenLegTime)
+                }
+
+                numBurritos = 0
+                if(wave >= WaveAllowFactor * 9){
+                    numBurritos = Math.floor(spendLeft * .75 / BurritoScore);
+                    spendLeft = spendLeft - numBurritos * BurritoScore;
+                    var BurritoInt = setInterval(function(){
+                        if((numBurritos >= 1)){
+                            wrun = true
+                            var Burrito_health = 90
+                            var Burrito= new sjs.Image("burrito.png")
+                            Burrito.type = "Food";
+                            Burrito.moveTo(0,200);
+                            Burrito.noBounds=true;
+                            Burrito.setSize(200,200);
+                            Burrito.friction = 0;
+                            Burrito.pushRight(2);
+                            Burrito.health = Burrito_health
+                            Burrito.cooldown = 0
+                            numBurritos --;
+                            if(numBurritos == 0){
+                                clearInterval(BurritoInt)
+                            }
+                        }
+                    },BurritoTime)
+                }
+                numHotDogs = 0
+                if(wave >= WaveAllowFactor * 7){
+                    numHotDogs = Math.floor(spendLeft * .75 / HotDogScore);
+                    spendLeft = spendLeft - numHotDogs * HotDogScore;
+                    var HotDogInt = setInterval(function(){
+                        if((numHotDogs >= 1)){
+                            wrun = true
+                            var HotDog_health = 60
+                            var HotDog= new sjs.Image("hotdog.png")
+                            HotDog.type = "Food";
+                            HotDog.moveTo(0,200);
+                            HotDog.noBounds=true;
+                            HotDog.setSize(200,200);
+                            HotDog.friction = 0;
+                            HotDog.pushRight(3);
+                            HotDog.health = HotDog_health
+                            HotDog.cooldown = 0
+                            numHotDogs --;
+                            if(numHotDogs == 0){
+                                clearInterval(HotDogInt)
+                            }
+                        }
+                    },HotDogTime)
+                }
+                
+                numBurgers = 0;
+                if(wave >= WaveAllowFactor*5){
+                    numBurgers = Math.floor(spendLeft * .75 / BurgerScore);
+                    spendLeft = spendLeft - numBurgers * BurgerScore;
+                    var BurgerInt = setInterval(function(){
+                        if((numBurgers >= 1)){
+                            wrun = true
+                            BurgerWait = false
+                            var Burger_health = 25
+                            var Burger = new sjs.Image("burger.png")
+                            Burger.type = "Food";
+                            Burger.moveTo(0,200);
+                            Burger.noBounds=true;
+                            Burger.setSize(200,200);
+                            Burger.friction = 0;
+                            Burger.pushRight(4);
+                            Burger.health = Burger_health
+                            Burger.cooldown = 0
+                            numBurgers --;
+                            if(numBurgers == 0){
+                                clearInterval(BurgerInt)
+                            }
+                        }
+                    },BurgerTime)
+                }
+                numFrenchFrys = 0;
+                if(wave >= WaveAllowFactor * 3){
+                    numFrenchFrys = Math.floor(spendLeft * .75 / FrenchFryScore);
+                    spendLeft = spendLeft - numFrenchFrys * FrenchFryScore;
+                    var FrenchFryInt = setInterval(function(){
+                        if((numFrenchFrys >= 1)){
+                            wrun = true
+                            FrenchFryWait = false
+                            var FrenchFry_health = 15
+                            var FrenchFry = new sjs.Image("fry.png")
+                            FrenchFry.type = "Food";
+                            FrenchFry.moveTo(0,200);
+                            FrenchFry.noBounds=true;
+                            FrenchFry.setSize(200,200);
+                            FrenchFry.friction = 0;
+                            FrenchFry.pushRight(2);
+                            FrenchFry.health = FrenchFry_health
+                            FrenchFry.cooldown = 0
+                            numFrenchFrys --;
+                            if(numFrenchFrys == 0){
+                                clearInterval(FrenchFryInt)
+                            }
+                        }
+                    },FrenchFryTime)
+                }
+                
+
+                if(wave >= WaveAllowFactor * 0){
+                    numChickenNuggets = Math.floor(spendLeft / ChickenNuggetScore);
+                    spendLeft = spendLeft - numChickenNuggets * ChickenNuggetScore;
+                    var ChickenNuggetInt = setInterval(function(){
+                        if((numChickenNuggets >= 1)){
+                            wrun = true
+                            var ChickenNugget_health = 10
+                            var ChickenNugget = new sjs.Image("chicken nug2.png")
+                            ChickenNugget.type = "Food";
+                            ChickenNugget.moveTo(0,250);
+                            ChickenNugget.noBounds=true;
+                            ChickenNugget.setSize(200,200);
+                            ChickenNugget.friction = 0;
+                            ChickenNugget.pushRight(3);
+                            ChickenNugget.health = ChickenNugget_health
+                            ChickenNugget.cooldown = 0
+                            numChickenNuggets --;
+                            if(numChickenNuggets == 0){
+                                clearInterval(ChickenNuggetInt)
+                            }
+                        }
+                    },ChickenNuggetTime)
+                }
+                var BtnInt = setInterval(function(){
+                    if((numChickenNuggets == 0)&(numFrenchFrys == 0)&(numBurgers == 0)&(numHotDogs == 0)&
+                        (numBurritos == 0)&(numChickenLegs == 0)&(numSandwichs == 0)&(numRamen_Fuhs == 0)&(numPizzas == 0)&(Btndest == false)){
+                        wrun = false
+                        Btndest = true
+                        var NextBtn = new sjs.Button("Next Wave", function(){
+                            wavemake()
+                            NextBtn.destroy()
+                        });
+                        NextBtn.moveTo(400,0)
+                    }
+                },1000)
+                
+                
+                
+
+            }
+            function wavemake(){
+                //(difficulty,wave,waveallow)
+                help += 1
+                dif += 300 * help
+                Wave_text.setText("Wave: " + help);
+                Wavemaker(dif,help,1)
+            }
+            var Spoon_cost = 25
+            function Spoon(){
+				if(Crumbs >= Spoon_cost){
+					Crumbs -= Spoon_cost; 
+					Spoon_cost += 10
+                    document.getElementById("SpoonBtn").value = "" + Spoon_cost + " Crumbs!"
+                    + "\n 7 hits!";
+					Crumbs_text.setText("Crumbs: "+Crumbs);
+					var Spoon = new sjs.Image("spoon.png");
+					Spoon.type = "Spoon";
+					Spoon.setSize(150,150);
+					Spoon.center().offset(-sjs.gx,-200);
+					Spoon.lives = 7;
+					Spoon.onMouseDown(function(){
+						Spoon.draggable();
+						Spoon.follow(sjs.mouse);
+					});
+					Spoon.onMouseUp(function(){
+						setTimeout(function(){
+							Spoon.undraggable();
+						},100)
+						Spoon.unfollow(sjs.mouse);
+						Spoon.setGravity();
+					});
+				} else {
+					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
+					no_Crumbs.center().offset(-sjs.gx,-200);
+					setTimeout(function(){
+						no_Crumbs.destroy();
+					},2500);
+				 }
+
+			}
+            var Knife_cost = 500
+            var KHitId = 1
+            function Knife(){
+				if(Crumbs >= Knife_cost){
+					Crumbs -= Knife_cost;
+					Knife_cost += 100
+                    document.getElementById("KnifeBtn").value = "" + Knife_cost + " Crumbs!"
+                    + "\n 10 dph!";
+					Crumbs_text.setText("Crumbs: "+Crumbs);
+					var Knife = new sjs.Image("nife.png");
+					Knife.type = "Knife";
+                    Knife.HitId = KHitId
+                    KHitId ++
+					Knife.setSize(150,150);
+					Knife.center().offset(-sjs.gx,-200);
+					Knife.damage = 10;
+					Knife.onMouseDown(function(){
+						Knife.draggable();
+						Knife.follow(sjs.mouse);
+					});
+					Knife.onMouseUp(function(){
+						setTimeout(function(){
+							Knife.undraggable();
+						},100)
+						Knife.unfollow(sjs.mouse);
+						Knife.setGravity();
+					});
+				} else {
+					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
+					no_Crumbs.center().offset(-sjs.gx,-200);
+					setTimeout(function(){
+						no_Crumbs.destroy();
+					},2500);
+				 }
+
+			}
+
+			var Fork_cost = 65
+			function fork(){
+				if(Crumbs >= Fork_cost){
+					Crumbs -= Fork_cost;
+                    Fork_cost += 25
+                    document.getElementById("ForkBtn").value = "" + Fork_cost + " Crumbs!"
+                    + "\n 7.5 dps!";
+					Crumbs_text.setText("Crumbs: "+Crumbs);
+					var fork = new sjs.Image("fork.png");
+					fork.type = "fork";
+					fork.setSize(150,150);
+					fork.center().offset(-sjs.gx,-200);
+					var Fork_range = new sjs.Image("");
+					Fork_range.type = "Fork_range";
+					Fork_range.setSize(300,50);
+					Fork_range.moveTo(fork.getX()-300,fork.getY());
+					Fork_range.follow(fork);
+					Fork_range.fire=true;
+					Fork_range.firerate = 1500;
+					Fork_range.node.style.zIndex = -2;
+					fork.Fork_range = Fork_range;
+					fork.onMouseDown(function(){
+						fork.draggable();
+						fork.follow(sjs.mouse);
+					});
+					fork.onMouseUp(function(){
+						setTimeout(function(){
+							fork.undraggable();
+						},100)
+						fork.unfollow(sjs.mouse);
+						fork.setGravity();
+					});
+
+				} else {
+					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
+					no_Crumbs.center().offset(-sjs.gx,-200);
+					setTimeout(function(){
+						no_Crumbs.destroy();
+					},2500);
+
+				}
+
+			}
+            var Plate_cost = 400
+            function Plate(){
+				if(Crumbs >= Plate_cost){
+					Crumbs -= Plate_cost;
+                    Plate_cost += 75
+                    document.getElementById("PlateBtn").value = "" + Plate_cost + " Crumbs!"
+                    + "\n 0.5 sps!";
+					Crumbs_text.setText("Crumbs: "+Crumbs);
+					var Plate = new sjs.Image("plate.png");
+					Plate.type = "Plate";
+					Plate.setSize(150,150);
+					Plate.center().offset(-sjs.gx,-200);
+                    platespike_damage = 25
+					var plateint = setInterval(function(){
+                        if (wrun == true){
+                            var platespike = new sjs.Image("plate.png")
+                            platespike.type = "spike";
+                            platespike.moveTo(Plate.getX(),Plate.getY());
+                            platespike.noBounds=true;
+                            platespike.setSize(30,30);
+                            platespike.friction = 0;
+                            platespike.setGravity()
+                            platespike.damage = platespike_damage
+                        }    
+                    },2000)
+					Plate.onMouseDown(function(){
+						Plate.draggable();
+						Plate.follow(sjs.mouse);
+					});
+					Plate.onMouseUp(function(){
+						setTimeout(function(){
+							Plate.undraggable();
+						},100)
+						Plate.unfollow(sjs.mouse);
+					});
+
+				} else {
+					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
+					no_Crumbs.center().offset(-sjs.gx,-200);
+					setTimeout(function(){
+						no_Crumbs.destroy();
+					},2500);
+
+				}
+            }
+
+
+		</script>
+		<style>
+			.images{
+				height:50px;
+				margin:15px;
+			}
+
+		</style>
+	</head>
+	<body onload="start()">
+		<center>
+			<img src="spoon.png" class="images" onclick="Spoon()">
+			<img src="fork.png" class="images" onclick="fork()">
+            <img src="plate.png" class="images" onclick="Plate()">
+            <img src="nife.png" class="images" onclick="Knife()">
+			<br>
+			<input type="button" value="25 Crumbs!
+7 hits!" onclick="Spoon()" id="SpoonBtn">
+			<input type="button" value="65 Crumbs!
+7.5 dps!" onclick="fork()" id="ForkBtn">
+            <input type="button" value="400 Crumbs!
+0.5 sps!" onclick="Plate()" id="PlateBtn">
+            <input type="button" value="500 Crumbs!
+10 dph!" onclick="Knife()" id="KnifeBtn"> 
+		</center>
+		<div id="target" style="overflow:hidden; background-color:black; margin:auto;"></div>
+	</body>
+</html>
