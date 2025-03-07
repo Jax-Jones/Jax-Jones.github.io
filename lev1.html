@@ -209,10 +209,38 @@
                 var BroccoliScore = (1000*1000) * 2
                 var BroccoliTime = (BroccoliScore / (waveConverted * 3))* .2 * 1000
 
+                var CookieScore = (1000*1000) * 4
+                var CookieTime = (CookieScore / (waveConverted * 3))* .2 * 1000
+
                 var spendLeft = wavedifficulty;
 
+                numCookies = 0;
+                if(wave >= WaveAllowFactor * 64){
+                    numCookies = Math.floor(spendLeft * .75 / CookieScore);
+                    spendLeft = spendLeft - numCookies * CookieScore;
+                    var CookieInt = setInterval(function(){
+                        if((numCookies >= 1)){
+                            wrun = true
+                            var Cookie_health = 1000
+                            var Cookie = new sjs.Image("cookie.png")
+                            Cookie.type = "Food";
+                            Cookie.moveTo(0,200);
+                            Cookie.noBounds=true;
+                            Cookie.setSize(300,300);
+                            Cookie.friction = 0;
+                            Cookie.pushRight(4);
+                            Cookie.health = Cookie_health
+                            Cookie.cooldown = 0
+                            numCookies --;
+                            if(numCookies == 0){
+                                clearInterval(CookieInt)
+                            }
+                        }
+                    },CookieTime)
+                }
+
                 numBroccolis = 0;
-                if(wave >= WaveAllowFactor * 50){
+                if(wave >= WaveAllowFactor * 57){
                     numBroccolis = Math.floor(spendLeft * .75 / BroccoliScore);
                     spendLeft = spendLeft - numBroccolis * BroccoliScore;
                     var BroccoliInt = setInterval(function(){
