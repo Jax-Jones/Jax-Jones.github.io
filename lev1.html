@@ -37,12 +37,20 @@
 				sjs.keyDown(RIGHT_KEY, function(){
 					view.pushRight();
 				});
+                var LBtn = new sjs.Button("<", function(){
+                    view.pushLeft();
+			    });
+                LBtn.moveTo(370,0)
+                var RBtn = new sjs.Button(">", function(){
+                    view.pushRight();
+			    });
+                RBtn.moveTo(400,0)
                 var startBtn = new sjs.Button("Wave 1", function(){
                     //(difficulty,wave,waveallow)
                     Wavemaker(3000,1,1)
                     startBtn.destroy()
 			    });
-                startBtn.moveTo(400,250)
+                startBtn.moveTo(370,250)
                 
                 
                 
@@ -149,8 +157,8 @@
 				});
 
 				sjs.onHit("Food","right_screen",function(x,y){
-					Oof_text = new sjs.Text("Game Over Refresh To Play Again\n You Made It To Wave " + wave,18,"black");
-                    Oof_text.center()
+					Oof_text = new sjs.Text("Game Over\nRefresh To Play Again\n You Made It To Wave " + wave,18,"black");
+                    Oof_text.moveTo(400,250)
 				});
                 sjs.onHit("Food","background",function(x,y){
 					var htxt = new sjs.Text(x.health)
@@ -628,7 +636,7 @@
                             wavemake()
                             NextBtn.destroy()
                         });
-                        NextBtn.moveTo(400,0)
+                        NextBtn.moveTo(700,0)
                     }
                 },1000)
                 
