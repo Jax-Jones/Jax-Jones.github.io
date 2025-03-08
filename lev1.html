@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+        <meta name = "apple-mobile-web-app-capable" content="yes">
 		<title> Food Defense </title>
 		<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
 		<script>
@@ -40,11 +41,11 @@
                 var LBtn = new sjs.Button("<", function(){
                     view.pushLeft();
 			    });
-                LBtn.moveTo(370,0)
+                LBtn.moveTo(355,0)
                 var RBtn = new sjs.Button(">", function(){
                     view.pushRight();
 			    });
-                RBtn.moveTo(400,0)
+                RBtn.moveTo(415,0)
                 var startBtn = new sjs.Button("Wave 1", function(){
                     //(difficulty,wave,waveallow)
                     Wavemaker(3000,1,1)
