@@ -215,7 +215,35 @@
                 var PineappleScore = (1500*1500) * 2.5
                 var PineappleTime = (PineappleScore / (waveConverted * 3))* .2 * 1000
 
+                var CakeScore = (1500*1500) * 4.5
+                var CakeTime = (CakeScore / (waveConverted * 3))* .2 * 1000
+
                 var spendLeft = wavedifficulty;
+
+                numCakes = 0;
+                if(wave >= WaveAllowFactor * 78){
+                    numCakes = Math.floor(spendLeft * .75 / CakeScore);
+                    spendLeft = spendLeft - numCakes * CakeScore;
+                    var CakeInt = setInterval(function(){
+                        if((numCakes >= 1)){
+                            wrun = true
+                            var Cake_health = 1500
+                            var Cake = new sjs.Image("cake.png")
+                            Cake.type = "Food";
+                            Cake.moveTo(0,200);
+                            Cake.noBounds=true;
+                            Cake.setSize(300,300);
+                            Cake.friction = 0;
+                            Cake.pushRight(4.5);
+                            Cake.health = Cake_health
+                            Cake.cooldown = 0
+                            numCakes --;
+                            if(numCakes == 0){
+                                clearInterval(CakeInt)
+                            }
+                        }
+                    },CakeTime)
+                }
 
                 numPineapples = 0;
                 if(wave >= WaveAllowFactor * 71){
