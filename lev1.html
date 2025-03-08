@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-        <meta name = "apple-mobile-web-app-capable" content="yes">
 		<title> Food Defense </title>
 		<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
 		<script>
@@ -227,7 +226,35 @@
                 var CakeScore = (1500*1500) * 4.5
                 var CakeTime = (CakeScore / (waveConverted * 3))* .2 * 1000
 
+                var AppleScore = (2300*2300) * 2
+                var AppleTime = (AppleScore / (waveConverted * 3))* .2 * 1000
+
                 var spendLeft = wavedifficulty;
+
+                numApples = 0;
+                if(wave >= WaveAllowFactor * 90){
+                    numApples = Math.floor(spendLeft * .75 / AppleScore);
+                    spendLeft = spendLeft - numApples * AppleScore;
+                    var AppleInt = setInterval(function(){
+                        if((numApples >= 1)){
+                            wrun = true
+                            var Apple_health = 2300
+                            var Apple = new sjs.Image("apple.png")
+                            Apple.type = "Food";
+                            Apple.moveTo(0,200);
+                            Apple.noBounds=true;
+                            Apple.setSize(300,300);
+                            Apple.friction = 0;
+                            Apple.pushRight(2);
+                            Apple.health = Apple_health
+                            Apple.cooldown = 0
+                            numApples --;
+                            if(numApples == 0){
+                                clearInterval(AppleInt)
+                            }
+                        }
+                    },AppleTime)
+                }
 
                 numCakes = 0;
                 if(wave >= WaveAllowFactor * 78){
