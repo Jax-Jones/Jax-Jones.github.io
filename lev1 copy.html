@@ -149,8 +149,7 @@
 				});
 
 				sjs.onHit("Food","right_screen",function(x,y){
-					Oof_text = new sjs.Text("Game Over Refresh To Play Again\n You Made It To Wave " + wave,18,"black");
-                    Oof_text.center()
+					window.location="gameover.html";
 				});
                 sjs.onHit("Food","background",function(x,y){
 					var htxt = new sjs.Text(x.health)
@@ -172,164 +171,65 @@
 
                 var ChickenNuggetScore = (10*10) * 3
                 var ChickenNuggetTime = (ChickenNuggetScore / (waveConverted * 3))* 1.4 * 1000
+                var ChickenNuggetWait = false
 
                 var FrenchFryScore = (15*15) * 2
                 var FrenchFryTime = (FrenchFryScore / (waveConverted * 3))* 1.1 * 1000
+                var FrenchFryWait = false
 
                 var BurgerScore = (25*25) * 4
                 var BurgerTime = (BurgerScore / (waveConverted * 3))* .5 * 1000
+                var BurgerWait = false
 
                 var HotDogScore = (60*60) * 3
                 var HotDogTime = (HotDogScore / (waveConverted * 3))* .23 * 1000
+                var HotDogWait = false
 
                 var BurritoScore = (90*90) * 2
                 var BurritoTime = (BurritoScore / (waveConverted * 3))* .23 * 1000
+                var BurritoWait = false
 
                 var ChickenLegScore = (130*130) * 2
                 var ChickenLegTime = (ChickenLegScore / (waveConverted * 3))* .23 * 1000
+                var ChickenLegWait = false
 
                 var TacoScore = (180*180) * 3.5
                 var TacoTime = (TacoScore / (waveConverted * 3))* .23 * 1000
+                var TacoWait = false
 
                 var SandwichScore = (250*250) * 3
                 var SandwichTime = (SandwichScore / (waveConverted * 3))* .23 * 1000
+                var SandwichWait = false
 
                 var Ramen_FuhScore = (330*330) * 2.5
                 var Ramen_FuhTime = (Ramen_FuhScore / (waveConverted * 3))* .25 * 1000
+                var Ramen_FuhWait = false
 
                 var PizzaScore = (500*500) * 1
                 var PizzaTime = (PizzaScore / (waveConverted * 3))* .2 * 1000
+                var PizzaWait = false
 
-                var SpaghettiScore = (670*670) * 1.5
+                var SpaghettiScore = (750*750) * 1.5
                 var SpaghettiTime = (SpaghettiScore / (waveConverted * 3))* .2 * 1000
+                var SpaghettiWait = false
                 
-                var MacAndCheeseScore = (800*800) * 1.5
-                var MacAndCheeseTime = (MacAndCheeseScore / (waveConverted * 3))* .2 * 1000
-
-                var BroccoliScore = (1000*1000) * 2
-                var BroccoliTime = (BroccoliScore / (waveConverted * 3))* .2 * 1000
-
-                var CookieScore = (1000*1000) * 4
-                var CookieTime = (CookieScore / (waveConverted * 3))* .2 * 1000
-
-                var PineappleScore = (1500*1500) * 2.5
-                var PineappleTime = (PineappleScore / (waveConverted * 3))* .2 * 1000
 
                 var spendLeft = wavedifficulty;
 
-                numPineapples = 0;
-                if(wave >= WaveAllowFactor * 71){
-                    numPineapples = Math.floor(spendLeft * .75 / PineappleScore);
-                    spendLeft = spendLeft - numPineapples * PineappleScore;
-                    var PineappleInt = setInterval(function(){
-                        if((numPineapples >= 1)){
-                            wrun = true
-                            var Pineapple_health = 1500
-                            var Pineapple = new sjs.Image("pineapple.png")
-                            Pineapple.type = "Food";
-                            Pineapple.moveTo(0,200);
-                            Pineapple.noBounds=true;
-                            Pineapple.setSize(300,300);
-                            Pineapple.friction = 0;
-                            Pineapple.pushRight(2.5);
-                            Pineapple.health = Pineapple_health
-                            Pineapple.cooldown = 0
-                            numPineapples --;
-                            if(numPineapples == 0){
-                                clearInterval(PineappleInt)
-                            }
-                        }
-                    },PineappleTime)
-                }
-
-                numCookies = 0;
-                if(wave >= WaveAllowFactor * 64){
-                    numCookies = Math.floor(spendLeft * .75 / CookieScore);
-                    spendLeft = spendLeft - numCookies * CookieScore;
-                    var CookieInt = setInterval(function(){
-                        if((numCookies >= 1)){
-                            wrun = true
-                            var Cookie_health = 1000
-                            var Cookie = new sjs.Image("cookie.png")
-                            Cookie.type = "Food";
-                            Cookie.moveTo(0,200);
-                            Cookie.noBounds=true;
-                            Cookie.setSize(300,300);
-                            Cookie.friction = 0;
-                            Cookie.pushRight(4);
-                            Cookie.health = Cookie_health
-                            Cookie.cooldown = 0
-                            numCookies --;
-                            if(numCookies == 0){
-                                clearInterval(CookieInt)
-                            }
-                        }
-                    },CookieTime)
-                }
-
-                numBroccolis = 0;
-                if(wave >= WaveAllowFactor * 57){
-                    numBroccolis = Math.floor(spendLeft * .75 / BroccoliScore);
-                    spendLeft = spendLeft - numBroccolis * BroccoliScore;
-                    var BroccoliInt = setInterval(function(){
-                        if((numBroccolis >= 1)){
-                            wrun = true
-                            var Broccoli_health = 1000
-                            var Broccoli= new sjs.Image("broc2.png")
-                            Broccoli.type = "Food";
-                            Broccoli.moveTo(0,200);
-                            Broccoli.noBounds=true;
-                            Broccoli.setSize(400,400);
-                            Broccoli.friction = 0;
-                            Broccoli.pushRight(2);
-                            Broccoli.health = Broccoli_health
-                            Broccoli.cooldown = 0
-                            numBroccolis --;
-                            if(numBroccolis == 0){
-                                clearInterval(BroccoliInt)
-                            }
-                        }
-                    },BroccoliTime)
-                }
-
-                numMacAndCheeses = 0;
-                if(wave >= WaveAllowFactor * 50){
-                    numMacAndCheeses = Math.floor(spendLeft * .75 / MacAndCheeseScore);
-                    spendLeft = spendLeft - numMacAndCheeses * MacAndCheeseScore;
-                    var MacAndCheeseInt = setInterval(function(){
-                        if((numMacAndCheeses >= 1)){
-                            wrun = true
-                            var MacAndCheese_health = 800
-                            var MacAndCheese= new sjs.Image("MacAndCheese.png")
-                            MacAndCheese.type = "Food";
-                            MacAndCheese.moveTo(0,200);
-                            MacAndCheese.noBounds=true;
-                            MacAndCheese.setSize(300,300);
-                            MacAndCheese.friction = 0;
-                            MacAndCheese.pushRight(2);
-                            MacAndCheese.health = MacAndCheese_health
-                            MacAndCheese.cooldown = 0
-                            numMacAndCheeses --;
-                            if(numMacAndCheeses == 0){
-                                clearInterval(MacAndCheeseInt)
-                            }
-                        }
-                    },MacAndCheeseTime)
-                }
 
                 numSpaghettis = 0;
-                if(wave >= WaveAllowFactor * 43){
+                if(wave >= WaveAllowFactor * 50){
                     numSpaghettis = Math.floor(spendLeft * .75 / SpaghettiScore);
                     spendLeft = spendLeft - numSpaghettis * SpaghettiScore;
                     var SpaghettiInt = setInterval(function(){
                         if((numSpaghettis >= 1)){
                             wrun = true
-                            var Spaghetti_health = 670
-                            var Spaghetti= new sjs.Image("pasta.png")
+                            var Spaghetti_health = 750
+                            var Spaghetti= new sjs.Image("Spaghetti.png")
                             Spaghetti.type = "Food";
-                            Spaghetti.moveTo(0,200);
+                            Spaghetti.moveTo(0,0);
                             Spaghetti.noBounds=true;
-                            Spaghetti.setSize(300,300);
+                            Spaghetti.setSize(400,400);
                             Spaghetti.friction = 0;
                             Spaghetti.pushRight(1.5);
                             Spaghetti.health = Spaghetti_health
@@ -343,14 +243,14 @@
                 }
 
                 numPizzas = 0;
-                if(wave >= WaveAllowFactor * 35){
+                if(wave >= WaveAllowFactor * 50){
                     numPizzas = Math.floor(spendLeft * .75 / PizzaScore);
                     spendLeft = spendLeft - numPizzas * PizzaScore;
                     var PizzaInt = setInterval(function(){
                         if((numPizzas >= 1)){
                             wrun = true
                             var Pizza_health = 500
-                            var Pizza= new sjs.Image("Pizza.png")
+                            var Pizza= new sjs.Image("pizza.png")
                             Pizza.type = "Food";
                             Pizza.moveTo(0,0);
                             Pizza.noBounds=true;
