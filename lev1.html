@@ -10,6 +10,7 @@
 			function start(){
 				sjs.open("target",800,500 );
                 document.body.style.backgroundColor = "#000000";
+                preventDefault()
 
 				//Background Object and Properties
 				var background = new sjs.Image("bkg.png");
@@ -197,6 +198,10 @@
 			var Crumbs = 100;
             var Btndest = false
 			//var Crumbs_text = "";
+
+            function preventDefault(e) {
+                e.preventDefault();
+            }
             function Wavemaker(wavedifficulty,wave,WaveAllowFactor){
                 Btndest = false
                 // Score Equation: (Health^2) * Speed
