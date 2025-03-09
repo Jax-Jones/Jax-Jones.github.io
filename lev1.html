@@ -7,10 +7,13 @@
             var help = 1
             var dif = 3000
             var wrun = false
+            function disableScroll() {
+                body.classList.add("remove-scrolling");
+            }
 			function start(){
 				sjs.open("target",800,500 );
                 document.body.style.backgroundColor = "#000000";
-                preventDefault()
+                disableScroll()
 
 				//Background Object and Properties
 				var background = new sjs.Image("bkg.png");
