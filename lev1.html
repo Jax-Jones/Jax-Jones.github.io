@@ -733,8 +733,8 @@
                         evt.preventDefault();
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
-                            console.log(`Inside event! Page=${touches[i].pageX},${touches[i].pageY} Screen=${touches[i].screenX},${touches[i].screenY} Spoon=${Spoon.getX()},${Spoon.getY()}`);
-                            Spoon.moveTo(440,220);
+                            console.log(`Inside event! Page=${touches[i].pageX},${touches[i].pageY} Screen=${touches[i].screenX},${touches[i].screenY} Spoon=${Spoon.getX()},${Spoon.getY()} sjs.gx=${sjs.gx}`);
+                            Spoon.moveTo(touches[i].pageX - sjs.gx, touches[i].pageY - sjs.gy);
                         }
                     })
 				} else {
