@@ -713,6 +713,7 @@
 						Spoon.setGravity();
 					});
                     Spoon.node.addEventListener("touchmove", (evt) => {
+                        console.log("Inside event!");
                         evt.preventDefault();
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
