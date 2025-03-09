@@ -79,6 +79,16 @@
                     platespikegrd.id = x.id
                     x.destroy()
 				});
+                sjs.onHit("uspike","land",function(x,y){
+					sjs.stoppedBy(x,y);
+                    platespikegrd = new sjs.Image("gldplatespk.png")
+                    platespikegrd.moveTo(x.getX(),y.getY())
+                    platespikegrd.setSize(30,30)
+                    platespikegrd.damage = x.damage
+                    platespikegrd.type = "grdspike"
+                    platespikegrd.id = x.id
+                    x.destroy()
+				});
                 sjs.onHit("spikegrd","background",function(x,y){
 					if(!x.id == help){
                         x.destroy()
@@ -164,8 +174,7 @@
 				});
 
 				sjs.onHit("Food","right_screen",function(x,y){
-					Oof_text = new sjs.Text("Game Over\nRefresh To Play Again\n You Made It To Wave " + help,18,"black");
-                    Oof_text.moveTo(400,250)
+					window.location = "lev1.html"
 				});
                 sjs.onHit("Food","background",function(x,y){
 					var htxt = new sjs.Text(x.health)
@@ -825,13 +834,13 @@
 					var plateint = setInterval(function(){
                         if (wrun == true){
                             var platespike = new sjs.Image("plate.png")
-                            platespike.type = "spike";
+                            platespike.type = "uspike";
                             platespike.moveTo(Plate.getX(),Plate.getY());
                             platespike.noBounds=true;
                             platespike.setSize(30,30);
                             platespike.friction = 0;
                             platespike.setGravity()
-                            platespike.damage = platespike_damage
+                            platespike.damage = 25
                             platespike.id = help
                         }    
                     },2000)
@@ -854,6 +863,61 @@
 					},2500);
 
 				}
+                Plate.node.ondblclick = function(){
+                    if(Crumbs < 400){
+                        var noCrumbs = new sjs.Text("You Can't Upgrade! You Don't Have Enough Crumbs!",20,"red");
+                        noCrumbs.center().offset(-sjs.gx,+220);
+                        setTimeout(function(){
+                            noCrumbs.destroy();
+                        },1000);
+                    }
+
+                    else if(Plate.upgraded){
+                        var upgraded_text = new sjs.Text("This Plate is Already Upgraded!",20,"red");
+                        upgraded_text.center().offset(-sjs.gx,+220);
+                        setTimeout(function(){
+                            upgraded_text.destroy();
+                        },2000);
+                    }
+
+                    else if(Crumbs >= 400){
+                        var PlateUpgrade = new sjs.Button("More Damage! (50 damage)(400 Crumbs)", function(){
+                            uPlate = new sjs.Image("gldplate.png");
+                            uPlate.setSize(150,150);
+                            uPlate.moveTo(Plate.getX(),Plate.getY())
+                            platespike_damage = 50
+                            Plate.upgraded = true;
+                            clearInterval(plateint)
+                            Plate.destroy()
+                            var uplateint = setInterval(function(){
+                                if (wrun == true){
+                                    var platespike = new sjs.Image("gldplate.png")
+                                    platespike.type = "uspike";
+                                    platespike.moveTo(Plate.getX(),Plate.getY());
+                                    platespike.noBounds=true;
+                                    platespike.setSize(30,30);
+                                    platespike.friction = 0;
+                                    platespike.setGravity()
+                                    platespike.damage = 50
+                                    platespike.id = help
+                                }    
+                            },2000)
+                            Crumbs -= 400;
+                            Crumbs_text.setText("Crumbs: "+Crumbs);
+                            var upgrade_text = new sjs.Text("Upgrade Complete",20,"red");
+                            upgrade_text.center().offset(-sjs.gx,+220);
+                            setTimeout(function(){
+                                upgrade_text.destroy();
+                            },2000);
+                            PlateUpgrade.destroy();
+                            setTimeout(function(){
+                                PlateUpgrade.destroy();
+                            },5000);
+                                            
+                        });
+                        PlateUpgrade.center();
+                    }
+                }
             }
 
 
