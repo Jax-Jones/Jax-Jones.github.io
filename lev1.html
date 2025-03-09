@@ -712,7 +712,7 @@
 						Spoon.unfollow(sjs.mouse);
 						Spoon.setGravity();
 					});
-                    Spoon.addEventListener("touchmove", function(evt){
+                    Spoon.node.addEventListener("touchmove", (evt) => {
                         evt.preventDefault();
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
