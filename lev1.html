@@ -108,9 +108,15 @@
 				sjs.onHit("Fork_range","Food",function(x,y){
 					if(x.fire == true){
                         var gbullet_damage = 10
-						var gbullet = new sjs.Image("fork bullet.png");
+                        if(x.upgraded == false){
+                            var gbullet = new sjs.Image("fork bullet.png");
+                            gbullet.moveTo(x.getX() + 260 ,320);
+                        }
+						if(x.upgraded == true){
+                            var gbullet = new sjs.Image("gldforkblt.png");
+                            gbullet.moveTo(x.getX() + 500 ,320);
+                        }
 						gbullet.type="bullet";
-						gbullet.moveTo(x.getX() + 260 ,320);
 						gbullet.setSize(50, 50);
 						gbullet.friction=0;
 						var dx = y.getX()*1.1 - x.getX()-600;
@@ -122,9 +128,11 @@
                         gbullet.damage = gbullet_damage
 						x.fire = false;
 						setTimeout(function(){
-							gbullet.destroy();
 							x.fire=true;
 						},x.firerate);
+                        setTimeout(function(){
+                            gbullet.destroy();
+						},x.firerate*2);
 					}
 				});
 
@@ -186,7 +194,7 @@
 
 			}
 
-			var Crumbs = 100;
+			var Crumbs = 1000;
             var Btndest = false
 			//var Crumbs_text = "";
             function Wavemaker(wavedifficulty,wave,WaveAllowFactor){
@@ -787,14 +795,15 @@
 					fork.type = "fork";
 					fork.setSize(150,150);
 					fork.center().offset(-sjs.gx,-200);
-					var Fork_range = new sjs.Image("");
+					var Fork_range = new sjs.Image("cake.png");
 					Fork_range.type = "Fork_range";
 					Fork_range.setSize(300,50);
 					Fork_range.moveTo(fork.getX()-300,fork.getY());
 					Fork_range.follow(fork);
 					Fork_range.fire=true;
 					Fork_range.firerate = 1500;
-					Fork_range.node.style.zIndex = -2;
+					Fork_range.node.style.zIndex = 2;
+                    Fork_range.upgraded = false
 					fork.Fork_range = Fork_range;
 					fork.onMouseDown(function(){
 						fork.draggable();
@@ -816,8 +825,59 @@
 					},2500);
 
 				}
+                fork.node.ondblclick = function() {
+                    if(Crumbs < 125){
+                        var noCrumbs = new sjs.Text("You Can't Upgrade! You Don't Have Enough Crumbs!",20,"red");
+                        noCrumbs.center().offset(-sjs.gx,+220);
+                        setTimeout(function(){
+                            noCrumbs.destroy();
+                        },1000);
+                    }
 
-			}
+                    else if(fork.upgraded){
+                        var upgraded_text = new sjs.Text("This Fork is Already Upgraded!",20,"red");
+                        upgraded_text.center().offset(-sjs.gx,+220);
+                        setTimeout(function(){
+                            upgraded_text.destroy();
+                        },2000);
+                    }
+
+                    else if(Crumbs >= 125){
+                        var forkUpgrade = new sjs.Button("Bigger Range! (2x)(125 Crumbs)", function(){
+                            Fork_range.destroy();
+                            ufork = new sjs.Image("gldfork.png");
+                            ufork.setSize(150,150);
+                            ufork.moveTo(fork.getX(),fork.getY())
+                            ufork.type = "fork"
+                            fork.upgraded = true;
+                            fork.destroy()
+                            var ufrange = new sjs.Image("cake.png");
+                            ufrange.type = "Fork_range";
+                            ufrange.setSize(600,50);
+                            ufrange.moveTo(fork.getX()-600,fork.getY());
+                            ufrange.follow(fork);
+                            ufrange.fire=true;
+                            ufrange.firerate = 1500;
+                            ufrange.node.style.zIndex = 2;
+                            ufrange.upgraded = true
+                            Crumbs -= 125;
+                            Crumbs_text.setText("Crumbs: "+Crumbs);
+                            var upgrade_text = new sjs.Text("Upgrade Complete",20,"red");
+                            upgrade_text.center().offset(-sjs.gx,+220);
+                            setTimeout(function(){
+                                upgrade_text.destroy();
+                            },2000);
+                            forkUpgrade.destroy();
+                            setTimeout(function(){
+                                forkUpgrade.destroy();
+                            },5000);
+                                            
+                        });
+                        forkUpgrade.center();
+                    }
+                }
+            }
+
             var Plate_cost = 400
             function Plate(){
 				if(Crumbs >= Plate_cost){
@@ -834,7 +894,7 @@
 					var plateint = setInterval(function(){
                         if (wrun == true){
                             var platespike = new sjs.Image("plate.png")
-                            platespike.type = "uspike";
+                            platespike.type = "spike";
                             platespike.moveTo(Plate.getX(),Plate.getY());
                             platespike.noBounds=true;
                             platespike.setSize(30,30);
