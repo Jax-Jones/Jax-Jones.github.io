@@ -734,7 +734,7 @@
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
                             console.log(`Inside event! Page=${touches[i].pageX},${touches[i].pageY} Client=${touches[i].clientX - sjs.gx},${touches[i].clientY - sjs.gy} Spoon=${Spoon.getX()},${Spoon.getY()} sjs.gx=${sjs.gx}`);
-                            Spoon.moveTo(touches[i].clientX - sjs.gx -100, touches[i].clientY - sjs.gy + 100);
+                            Spoon.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
                         }
                     })
 				} else {
