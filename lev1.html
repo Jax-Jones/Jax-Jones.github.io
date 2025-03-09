@@ -194,7 +194,7 @@
 
 			}
 
-			var Crumbs = 1000;
+			var Crumbs = 100;
             var Btndest = false
 			//var Crumbs_text = "";
             function Wavemaker(wavedifficulty,wave,WaveAllowFactor){
@@ -795,7 +795,7 @@
 					fork.type = "fork";
 					fork.setSize(150,150);
 					fork.center().offset(-sjs.gx,-200);
-					var Fork_range = new sjs.Image("cake.png");
+					var Fork_range = new sjs.Image("");
 					Fork_range.type = "Fork_range";
 					Fork_range.setSize(300,50);
 					Fork_range.moveTo(fork.getX()-300,fork.getY());
@@ -851,7 +851,7 @@
                             ufork.type = "fork"
                             fork.upgraded = true;
                             fork.destroy()
-                            var ufrange = new sjs.Image("cake.png");
+                            var ufrange = new sjs.Image("");
                             ufrange.type = "Fork_range";
                             ufrange.setSize(600,50);
                             ufrange.moveTo(fork.getX()-600,fork.getY());
