@@ -739,7 +739,6 @@
                         evt.preventDefault();
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
-                            console.log(`Inside event! Page=${touches[i].pageX},${touches[i].pageY} Client=${touches[i].clientX - sjs.gx},${touches[i].clientY - sjs.gy} Spoon=${Spoon.getX()},${Spoon.getY()} sjs.gx=${sjs.gx}`);
                             if(Spoon.onground == false){
                                 Spoon.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
                             }  
@@ -785,6 +784,22 @@
 						Knife.unfollow(sjs.mouse);
 						Knife.setGravity();
 					});
+                    Knife.node.addEventListener("touchstart", (evt) => {
+                        evt.preventDefault();
+                    })
+                    Knife.node.addEventListener("touchmove", (evt) => {
+                        evt.preventDefault();
+                        const touches = evt.changedTouches;
+                        for (let i = 0; i < touches.length ; i++) {
+                            if(Knife.onground == false){
+                                Knife.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
+                            }  
+                        }
+                    })
+                    Knife.node.addEventListener("touchend", (evt) => {
+                        evt.preventDefault();
+                        Knife.setGravity()
+                    })
 				} else {
 					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
 					no_Crumbs.center().offset(-sjs.gx,-200);
@@ -817,6 +832,22 @@
 					Fork_range.node.style.zIndex = -2;
                     Fork_range.upgraded = false
 					fork.Fork_range = Fork_range;
+                    fork.node.addEventListener("touchstart", (evt) => {
+                        evt.preventDefault();
+                    })
+                    fork.node.addEventListener("touchmove", (evt) => {
+                        evt.preventDefault();
+                        const touches = evt.changedTouches;
+                        for (let i = 0; i < touches.length ; i++) {
+                            if(fork.onground == false){
+                                fork.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
+                            }  
+                        }
+                    })
+                    fork.node.addEventListener("touchend", (evt) => {
+                        evt.preventDefault();
+                        fork.setGravity()
+                    })
 					fork.onMouseDown(function(){
 						fork.draggable();
 						fork.follow(sjs.mouse);
@@ -917,6 +948,22 @@
                             platespike.id = help
                         }    
                     },2000)
+                    Plate.node.addEventListener("touchstart", (evt) => {
+                        evt.preventDefault();
+                    })
+                    Plate.node.addEventListener("touchmove", (evt) => {
+                        evt.preventDefault();
+                        const touches = evt.changedTouches;
+                        for (let i = 0; i < touches.length ; i++) {
+                            if(Plate.onground == false){
+                                Plate.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
+                            }  
+                        }
+                    })
+                    Plate.node.addEventListener("touchend", (evt) => {
+                        evt.preventDefault();
+                        Plate.setGravity()
+                    })
 					Plate.onMouseDown(function(){
 						Plate.draggable();
 						Plate.follow(sjs.mouse);
