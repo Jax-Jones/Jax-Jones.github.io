@@ -816,7 +816,7 @@
                     }
 
                     else if(Crumbs >= 25){
-                        var SpoonUpgrade = new sjs.Button("More Damage! (20 damage)(600 Crumbs)", function(){
+                        var SpoonUpgrade = new sjs.Button("More Hits! (14 Hits)(25 Crumbs)", function(){
                             uSpoon = new sjs.Image("gldSpoon.png");
                             uSpoon.setSize(150,150);
                             uSpoon.moveTo(Spoon.getX(),Spoon.getY())
@@ -1162,7 +1162,7 @@
 					Plate.setSize(150,150);
 					Plate.center().offset(-sjs.gx,-200);
                     platespike_damage = 25
-                    plate.onground = false
+                    Plate.onground = false
 					var plateint = setInterval(function(){
                         if (wrun == true){
                             var platespike = new sjs.Image("plate.png")
