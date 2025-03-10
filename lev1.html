@@ -1174,9 +1174,11 @@
                             platespike.setGravity()
                             platespike.damage = 25
                             platespike.id = help
-                            if(!x.id == help){
-                                x.destroy()
-                            }
+                            var plateint = setInterval(function(){
+                                if(!x.id == help){
+                                    x.destroy()
+                                }
+                            },2000)
                         }    
                     },2000)
                     Plate.node.addEventListener("touchstart", (evt) => {
@@ -1252,9 +1254,11 @@
                                     platespike.setGravity()
                                     platespike.damage = 50
                                     platespike.id = help
-                                    if(!x.id == help){
-                                        x.destroy()
-                                    }
+                                    var plateint = setInterval(function(){
+                                        if(!x.id == help){
+                                            x.destroy()
+                                        }
+                                    },2000)
                                 }    
                             },2000)
                             Crumbs -= 400;
