@@ -69,6 +69,7 @@
 
 				sjs.onHit(["Spoon", "fork","Knife"],"land",function(x,y){
 					sjs.stoppedBy(x,y);
+                    x.onground = true
 				});
                 sjs.onHit("spike","land",function(x,y){
 					sjs.stoppedBy(x,y);
@@ -719,6 +720,7 @@
 					Spoon.setSize(150,150);
 					Spoon.center().offset(-sjs.gx,-200);
 					Spoon.lives = 7;
+                    Spoon.onground = false
 					Spoon.onMouseDown(function(){
 						Spoon.draggable();
 						Spoon.follow(sjs.mouse);
@@ -730,13 +732,22 @@
 						Spoon.unfollow(sjs.mouse);
 						Spoon.setGravity();
 					});
+                    Spoon.node.addEventListener("touchstart", (evt) => {
+                        evt.preventDefault();
+                    })
                     Spoon.node.addEventListener("touchmove", (evt) => {
                         evt.preventDefault();
                         const touches = evt.changedTouches;
                         for (let i = 0; i < touches.length ; i++) {
                             console.log(`Inside event! Page=${touches[i].pageX},${touches[i].pageY} Client=${touches[i].clientX - sjs.gx},${touches[i].clientY - sjs.gy} Spoon=${Spoon.getX()},${Spoon.getY()} sjs.gx=${sjs.gx}`);
-                            Spoon.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
+                            if(Spoon.onground == false){
+                                Spoon.moveTo(touches[i].clientX - sjs.gx -150, touches[i].clientY - sjs.gy - 150);
+                            }  
                         }
+                    })
+                    Spoon.node.addEventListener("touchend", (evt) => {
+                        evt.preventDefault();
+                        Spoon.setGravity()
                     })
 				} else {
 					var no_Crumbs = new sjs.Text("You Don't Have Enough Crumbs! Collect More!");
