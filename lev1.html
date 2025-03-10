@@ -231,17 +231,30 @@
                 var Ramen_FuhScore = (330*330) * 2.5
                 var Ramen_FuhTime = (Ramen_FuhScore / (waveConverted * 3))* .25 * 1000
 
+                var CarrotScore = (400*400) * 1.75
+                var CarrotTime = (CarrotScore / (waveConverted * 3))* .25 * 1000
+                
+                //nedd enemy
+
                 var PizzaScore = (500*500) * 1
                 var PizzaTime = (PizzaScore / (waveConverted * 3))* .2 * 1000
 
+                //need enemy
+
                 var SpaghettiScore = (670*670) * 1.5
                 var SpaghettiTime = (SpaghettiScore / (waveConverted * 3))* .2 * 1000
+
+                //need enemy
                 
                 var MacAndCheeseScore = (800*800) * 1.5
                 var MacAndCheeseTime = (MacAndCheeseScore / (waveConverted * 3))* .2 * 1000
 
+                //need enemy
+
                 var BroccoliScore = (1000*1000) * 2
                 var BroccoliTime = (BroccoliScore / (waveConverted * 3))* .2 * 1000
+
+                //need enemy
 
                 var CookieScore = (1000*1000) * 4
                 var CookieTime = (CookieScore / (waveConverted * 3))* .2 * 1000
@@ -367,7 +380,7 @@
                             var Broccoli_health = 1000
                             var Broccoli= new sjs.Image("broc2.png")
                             Broccoli.type = "Food";
-                            Broccoli.moveTo(0,200);
+                            Broccoli.moveTo(0,0);
                             Broccoli.noBounds=true;
                             Broccoli.setSize(400,400);
                             Broccoli.friction = 0;
@@ -457,6 +470,31 @@
                     },PizzaTime)
                 }
                 
+                numCarrots = 0;
+                if(wave >= WaveAllowFactor * 30){
+                    numCarrots = Math.floor(spendLeft * .75 / CarrotScore);
+                    spendLeft = spendLeft - numCarrots * CarrotScore;
+                    var CarrotInt = setInterval(function(){
+                        if((numCarrots >= 1)){
+                            wrun = true
+                            var Carrot_health = 400
+                            var Carrot = new sjs.Image("carrot.png")
+                            Carrot.type = "Food";
+                            Carrot.moveTo(0,100);
+                            Carrot.noBounds=true;
+                            Carrot.setSize(250,250);
+                            Carrot.friction = 0;
+                            Carrot.pushRight(1.75);
+                            Carrot.health = Carrot_health
+                            Carrot.cooldown = 0
+                            numCarrots --;
+                            if(numCarrots == 0){
+                                clearInterval(CarrotInt)
+                            }
+                        }
+                    },CarrotTime)
+                }
+
                 numRamen_Fuhs = 0
                 if(wave >= WaveAllowFactor * 25){
                     numRamen_Fuhs = Math.floor(spendLeft * .75 / Ramen_FuhScore);
@@ -683,7 +721,7 @@
                 }
                 var BtnInt = setInterval(function(){
                     if((numChickenNuggets == 0)&(numFrenchFrys == 0)&(numBurgers == 0)&(numHotDogs == 0)&(numBurritos == 0)&
-                    (numChickenLegs == 0)&(numTacos == 0)&(numSandwichs == 0)&(numRamen_Fuhs == 0)&(numPizzas == 0)&(numSpaghettis == 0)&
+                    (numChickenLegs == 0)&(numTacos == 0)&(numSandwichs == 0)&(numRamen_Fuhs == 0)&(numCarrots == 0)&(numPizzas == 0)&(numSpaghettis == 0)&
                     (numMacAndCheeses == 0)&(numBroccolis == 0)&(numCookies == 0)&(numPineapples == 0)&(numCakes == 0)&
                     (numApples == 0)&(Btndest == false)){
                         wrun = false
