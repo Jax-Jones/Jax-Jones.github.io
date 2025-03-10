@@ -858,6 +858,7 @@
 					Knife.setSize(150,150);
 					Knife.center().offset(-sjs.gx,-200);
 					Knife.damage = 10;
+                    Knife.onground = false
 					Knife.onMouseDown(function(){
 						Knife.draggable();
 						Knife.follow(sjs.mouse);
@@ -994,6 +995,7 @@
 					fork.type = "fork";
 					fork.setSize(150,150);
 					fork.center().offset(-sjs.gx,-200);
+                    fork.onground = false
 					var Fork_range = new sjs.Image("");
 					Fork_range.type = "Fork_range";
 					Fork_range.setSize(300,50);
@@ -1160,6 +1162,7 @@
 					Plate.setSize(150,150);
 					Plate.center().offset(-sjs.gx,-200);
                     platespike_damage = 25
+                    plate.onground = false
 					var plateint = setInterval(function(){
                         if (wrun == true){
                             var platespike = new sjs.Image("plate.png")
